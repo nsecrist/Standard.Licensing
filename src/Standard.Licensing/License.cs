@@ -68,7 +68,7 @@ namespace Standard.Licensing
         /// </summary>
         public Guid Id
         {
-            get { return new Guid(GetTag("Id") ?? String.Empty); }
+            get { return new Guid(GetTag("Id") ?? Guid.Empty.ToString()); }
             set { if (!IsSigned) SetTag("Id", value.ToString()); }
         }
 
