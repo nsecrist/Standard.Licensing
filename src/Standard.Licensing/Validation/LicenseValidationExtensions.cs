@@ -77,6 +77,23 @@ namespace Standard.Licensing.Validation
             return validationChainBuilder;
         }
 
+        public static IValidationChain HardwareIdentifier(this IStartValidationChain validationChain,
+            Guid hardwareIdentifier)
+        {
+            var validationChainBuilder = (validationChain as ValidationChainBuilder);
+            var validator = validationChainBuilder.StartValidatorChain();
+            validator.Validate = license => license.HardwareIdentifiers.Contains(hardwareIdentifier);
+
+            validator.FailureResult = new LicenseExpiredValidationFailure()
+            {
+                Message = "Hardware identifier mismatch!",
+                HowToResolve =
+                    @"This hardware is unauthorized. Please contact your distributor/vendor.",
+            };
+            
+            return validationChainBuilder;
+        }
+
         /// <summary>
         /// Check whether the product build date of the provided assemblies
         /// exceeded the <see cref="License.Expiration"/> date.
@@ -138,7 +155,7 @@ namespace Standard.Licensing.Validation
         /// Validates the <see cref="License.Signature"/>.
         /// </summary>
         /// <param name="validationChain">The current <see cref="IStartValidationChain"/>.</param>
-        /// <param name="publicKey">The public product key to validate the signature..</param>
+        /// <param name="publicKey">The public product key to validate the signature.</param>
         /// <returns>An instance of <see cref="IStartValidationChain"/>.</returns>
         public static IValidationChain Signature(this IStartValidationChain validationChain, string publicKey)
         {

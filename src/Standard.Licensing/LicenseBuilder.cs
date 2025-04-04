@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Standard.Licensing
 {
@@ -125,6 +126,17 @@ namespace Standard.Licensing
         public ILicenseBuilder LicensedTo(Action<Customer> configureCustomer)
         {
             configureCustomer(license.Customer);
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the hardware identifiers of the <see cref="License"/>.
+        /// </summary>
+        /// <param name="hardwareIdentifiers">The hardware identifiers authorized for the license.</param>
+        /// <returns>The <see cref="ILicenseBuilder"/>.</returns>
+        public ILicenseBuilder WithHardwareIdentifiers(IEnumerable<Guid> hardwareIdentifiers)
+        {
+            license.HardwareIdentifiers = hardwareIdentifiers.ToArray();
             return this;
         }
 

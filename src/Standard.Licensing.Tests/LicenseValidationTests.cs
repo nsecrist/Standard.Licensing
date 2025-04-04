@@ -202,6 +202,52 @@ namespace Standard.Licensing.Tests
         }
 
         [Test]
+        public void Can_Validate_Hardware_Locked_License()
+        {
+            var keyGenerator = Standard.Licensing.Security.Cryptography.KeyGenerator.Create();
+            var keyPair = keyGenerator.GenerateKeyPair();
+            var privateKey = keyPair.ToEncryptedPrivateKeyString("Testing");
+            var publicKey = keyPair.ToPublicKeyString();
+
+            var validHid1 = Guid.NewGuid();
+            var validHid2 = Guid.NewGuid();
+            
+            
+            var license = License.New()
+                .WithUniqueIdentifier(Guid.NewGuid())
+                .As(LicenseType.HardwareLocked)
+                .ExpiresAt(DateTime.Now.AddYears(1))
+                .WithMaximumUtilization(5)
+                .WithHardwareIdentifiers([validHid1, validHid2])
+                .CreateAndSignWithPrivateKey(privateKey, "Testing");
+            
+            var validationResults = license
+                .Validate()
+                .HardwareIdentifier(validHid1)
+                .AssertValidLicense().ToList();
+            
+            Assert.That(validationResults, Is.Not.Null);
+            Assert.That(validationResults.Count(), Is.EqualTo(0));
+            
+            validationResults = license
+                .Validate()
+                .HardwareIdentifier(validHid2)
+                .AssertValidLicense().ToList();
+            
+            Assert.That(validationResults, Is.Not.Null);
+            Assert.That(validationResults.Count(), Is.EqualTo(0));
+            
+            validationResults = license
+                .Validate()
+                .HardwareIdentifier(Guid.NewGuid())
+                .AssertValidLicense().ToList();
+            
+            Assert.That(validationResults, Is.Not.Null);
+            Assert.That(validationResults.Count(), Is.EqualTo(1));
+            
+        }
+
+        [Test]
         public void Do_Not_Crash_On_Invalid_Data()
         {
             var publicKey = "1234";

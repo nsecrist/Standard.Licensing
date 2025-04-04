@@ -69,6 +69,13 @@ namespace Standard.Licensing
         /// <param name="email">The email of the license holder.</param>
         /// <returns>The <see cref="ILicenseBuilder"/>.</returns>
         ILicenseBuilder LicensedTo(string name, string email);
+        
+        /// <summary>
+        /// Sets the hardware identifiers of the <see cref="License"/>.
+        /// </summary>
+        /// <param name="hardwareIdentifiers">The hardware identifiers authorized for the license.</param>
+        /// <returns>The <see cref="ILicenseBuilder"/>.</returns>
+        ILicenseBuilder WithHardwareIdentifiers(IEnumerable<Guid> hardwareIdentifiers);
 
         /// <summary>
         /// Sets the <see cref="Customer">license holder</see> of the <see cref="License"/>.

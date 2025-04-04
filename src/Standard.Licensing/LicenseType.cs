@@ -38,6 +38,11 @@ namespace Standard.Licensing
         /// <summary>
         /// Standard license
         /// </summary>
-        Standard = 2
+        Standard = 2,
+        
+        /// <summary>
+        /// Hardware locked license
+        /// </summary>
+        HardwareLocked = 3,
     }
 }

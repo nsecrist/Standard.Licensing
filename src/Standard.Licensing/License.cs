@@ -24,6 +24,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -67,7 +68,7 @@ namespace Standard.Licensing
         /// </summary>
         public Guid Id
         {
-            get { return new Guid(GetTag("Id") ?? Guid.Empty.ToString()); }
+            get { return new Guid(GetTag("Id") ?? String.Empty); }
             set { if (!IsSigned) SetTag("Id", value.ToString()); }
         }
 
@@ -93,6 +94,26 @@ namespace Standard.Licensing
         {
             get { return int.Parse(GetTag("Quantity") ?? "0"); }
             set { if (!IsSigned) SetTag("Quantity", value.ToString()); }
+        }
+
+        public IEnumerable<Guid> HardwareIdentifiers
+        {
+            get
+            {
+                var identifiers = GetTag("HardwareIdentifiers");
+                var identifiersArray = identifiers.Split(',');
+                var guids = new Guid[identifiersArray.Length];
+                for (var i = 0; i < identifiersArray.Length; i++)
+                {
+                    guids[i] = Guid.Parse(identifiersArray[i]);
+                }
+
+                return guids;
+            }
+            set
+            {
+                if (!IsSigned) SetTag("HardwareIdentifiers", string.Join(",", value));
+            }
         }
 
         /// <summary>
